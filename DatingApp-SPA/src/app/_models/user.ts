@@ -14,5 +14,5 @@ export interface User {
     introduction?: string;
     lookingFor?: string;
     photoUrl?: string;
-    photo?: Photo[];
+    photos?: Photo[];
 }
