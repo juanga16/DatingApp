@@ -15,8 +15,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
-    console.log(localStorage.getItem('token'));
-    console.log(localStorage.getItem('user'));
     const user: User = JSON.parse(localStorage.getItem('user'));
 
     if (token) {
