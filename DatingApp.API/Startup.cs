@@ -12,7 +12,6 @@ using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using DatingApp.API.Helpers;
-using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 
 namespace DatingApp.API
@@ -47,7 +46,11 @@ namespace DatingApp.API
         [System.Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DataContext>(x => { 
+                x.UseLazyLoadingProxies();
+                x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
             services.AddControllers()
                 .AddNewtonsoftJson(options => { 
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -98,6 +101,10 @@ namespace DatingApp.API
 
             // app.UseHttpsRedirection();
 
+            // Levanta los archivos del wwwroot en el localhost:5000
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -105,6 +112,7 @@ namespace DatingApp.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback");
             });            
         }
     }
