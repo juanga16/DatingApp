@@ -5,7 +5,7 @@
       <li class="list-inline item">
         <button class="bnt-bnt-primary"><i class="fa fa-user"[routerLink]="['/members/', user.id]"></i></button>
         <button class="bnt-bnt-primary"><i class="fa fa-heart" (click)="sendLike(user.id)"></i></button>
-        <button class="bnt-bnt-primary"><i class="fa fa-envelope"></i></button>
+        <button class="bnt-bnt-primary"><i class="fa fa-envelope" [routerLink]="['/members/', user.id]" [queryParams]="{tab: 3}"></i></button>
       </li>
     </ul>
   </div>
