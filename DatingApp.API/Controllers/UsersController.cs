@@ -30,7 +30,7 @@ namespace DatingApp.API.Controllers
         public async Task<IActionResult> GetUsers([FromQuery]UserParams userParams)
         {
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var user = await _datingRepository.GetUser(currentUserId);
+            var user = await _datingRepository.GetUser(currentUserId, true);
             userParams.UserId = currentUserId;
 
             if (string.IsNullOrEmpty(userParams.Gender))
@@ -47,7 +47,9 @@ namespace DatingApp.API.Controllers
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUsers(int id)
         {
-            var user = await _datingRepository.GetUser(id);
+            var isCurrentUser = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == id;            
+
+            var user = await _datingRepository.GetUser(id, isCurrentUser);
             var userToReturn = _mapper.Map<UserForDetailDTO>(user);
 
             return Ok(userToReturn);
@@ -59,7 +61,7 @@ namespace DatingApp.API.Controllers
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) 
                 return Unauthorized();
                 
-            var user = await _datingRepository.GetUser(id);
+            var user = await _datingRepository.GetUser(id, true);
             _mapper.Map(userForUpdateDTO, user);
 
             if (await _datingRepository.SaveAll())
@@ -79,7 +81,7 @@ namespace DatingApp.API.Controllers
             if (like != null)
                 return BadRequest("You already like this user");
             
-            if (await _datingRepository.GetUser(recipientId) == null)
+            if (await _datingRepository.GetUser(recipientId, false) == null)
                 return NotFound();
             
             like = new Like 

@@ -26,11 +26,15 @@ namespace DatingApp.API.Data
             _context.Remove(entity);
         }        
 
-        public async Task<User> GetUser(int id)
+        public async Task<User> GetUser(int id, bool isCurrentUser)
         {
-            var user = await _context.Users
-                                        //.Include(x => x.Photos)
-                                        .FirstOrDefaultAsync(x => x.Id == id);            
+            // Si no agrego el include, el IgnoreQueryFilters no funciona
+            var query = _context.Users.Include(x => x.Photos).AsQueryable();                              
+
+            if (isCurrentUser)                
+                query = query.IgnoreQueryFilters();
+
+            var user = await query.FirstOrDefaultAsync(x => x.Id == id);
 
             return user;
         }
@@ -105,7 +109,9 @@ namespace DatingApp.API.Data
 
         public async Task<Photo> GetPhoto(int id)
         {
-            var photo = await _context.Photos.FirstOrDefaultAsync(x => x.Id == id);
+            var photo = await _context.Photos
+                                        .IgnoreQueryFilters()
+                                        .FirstOrDefaultAsync(x => x.Id == id);
 
             return photo;            
         }

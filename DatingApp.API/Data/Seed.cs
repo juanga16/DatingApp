@@ -8,6 +8,8 @@ namespace DatingApp.API.Data
 {
     public class Seed
     {
+        //dotnet ef database drop
+        //dotnet ef database update
         public static void SeedUsers(UserManager<User> userManager, RoleManager<Role> roleManager) 
         {
             if (!userManager.Users.Any()) {
@@ -30,6 +32,7 @@ namespace DatingApp.API.Data
 
                 foreach(var user in users) 
                 {
+                    user.Photos.SingleOrDefault().IsApproved = true;
                     userManager.CreateAsync(user, "password").Wait();
                     userManager.AddToRoleAsync(user, "Member");
                 }
