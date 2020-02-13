@@ -10,6 +10,7 @@ namespace DatingApp.API.Data
     {
         //dotnet ef database drop
         //dotnet ef database update
+        //dotnet ef migrations add RemovedValuesTable
         public static void SeedUsers(UserManager<User> userManager, RoleManager<Role> roleManager) 
         {
             if (!userManager.Users.Any()) {
